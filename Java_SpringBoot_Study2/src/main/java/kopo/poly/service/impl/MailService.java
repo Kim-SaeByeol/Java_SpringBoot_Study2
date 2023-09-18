@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.internet.MimeMessage;
 import java.util.List;
@@ -19,63 +20,79 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class MailService implements IMailService {
-    private final JavaMailSender mailSender;
 
+    private final JavaMailSender mailSender;
     private final IMailMapper mailMapper;
+
     @Value("${spring.mail.username}")
     private String fromMail;
 
 
     @Override
-    public int doSendMail(MailDTO pDTO) {
-        // 로그 찍기 ( 추후 찍은 로그를 통해 이 함수에 접근했는지 파악하기 용이(
-        log.info(this.getClass() + ".doSendMail start!");
+    public List<MailDTO> getMailList() throws Exception {
 
-        //메일 발송 성공여부 ( 발송성공 : 1 / 발송실패 : 0 )
-        int res = 1;
+        log.info(this.getClass().getName() + ".getMailList 시작!");
 
-//        전달 받은 DTO로부터 데이터 가져오기 ( DTO 객체가 메모리에 올라가지 않아 Null이 발생할 수 있기 때문에
-//        에러 방지 차원에서 if문 사요
-        if (pDTO == null){
-            pDTO = new MailDTO();
+        List<MailDTO> resultList = mailMapper.getMailList();
+        if (resultList == null) {
+            log.info("resultList is null!");
+        } else if (resultList.isEmpty()) {
+            log.info("resultList is empty!");
+        } else {
+            log.info("resultList size: " + resultList.size());
         }
 
-        String toMail = CmmUtil.nvl(pDTO.getToMail());
-        String title = CmmUtil.nvl(pDTO.getTitle());
-        String contentse = CmmUtil.nvl(pDTO.getContents());
+        return mailMapper.getMailList();
+    }
 
-        //메일 발송 메시지 구조(파일 첨부 가능)
-        MimeMessage message = mailSender.createMimeMessage();
+    @Transactional
+    @Override
+    public void insertMailInfo(MailDTO pDTO) throws Exception {
+        log.info(this.getClass().getName() + ".insertMailInfo start!");
 
-        //메일 발송 메시지 구조를 쉽게 생성하게 도와주는 객체
-        MimeMessageHelper massageHelper = new MimeMessageHelper(message, "UTF-8");
-
-        try {
-            massageHelper.setTo(toMail);
-            massageHelper.setFrom(fromMail);
-            massageHelper.setSubject(title);
-            massageHelper.setText(contentse);
-
-            mailSender.send(message);
-            mailMapper.insertMailInfo(pDTO);
-
-        } catch (Exception e) {
-            res = 0;
-            log.info("[ERROR]" + this.getClass().getName() + ".doSendMail: " + e);
-        }
-
-
-        //로그 찍기(추후 찍은 로그를 통해 이 함수 호출이 끝났는지 확인)
-        log.info(this.getClass().getName() + ".doSendMail end!");
-
-        return res;
+        mailMapper.insertMailInfo(pDTO);
     }
 
     @Override
-    public List<MailDTO> getMailList() throws Exception {
+    public int doSendMail(MailDTO pDTO) {
+        log.info(this.getClass().getName() + ".doSendMail start!");
 
-        log.info(".service 메일 리스트");
+        // 메일 발송 성공여부(발송성공 : 1 / 발송실패 : 0)
+        int res = 1;
 
-        return mailMapper.getMailList();
+        // 전달 받은 DTO로부터 데이터 가져오기(DTO 객체가 메모리에 올라가지 않아 Null이 발생할 수 있기 때문에 에러방지차원으로 if문 사용함
+        if (pDTO == null) {
+            pDTO = new MailDTO();
+        }
+
+        String to_mail = CmmUtil.nvl(pDTO.getToMail());
+        String title = CmmUtil.nvl(pDTO.getTitle());
+        String contents = CmmUtil.nvl(pDTO.getContents());
+
+        log.info("to_mail : " + to_mail);
+        log.info("title : " + title);
+        log.info("contents : " + contents);
+
+        // 메일 발송 메시지 구조(파일 첨부 가능)
+        MimeMessage message = mailSender.createMimeMessage();
+
+        // 메일 발송 메시지 구조를 쉽게 생성하게 도와주는 객체
+
+        MimeMessageHelper messageHelper = new MimeMessageHelper(message, "UTF-8");
+
+        try {
+            messageHelper.setTo(to_mail);
+            messageHelper.setFrom(fromMail);
+            messageHelper.setSubject(title);
+            messageHelper.setText(contents);
+
+            mailSender.send(message);
+        } catch (Exception e) {
+            res = 0;
+            log.info("[ERROR] " + this.getClass().getName() + ".doSendMail : " + e);
+        }
+
+        log.info(this.getClass().getName() + ".doSendMail end!");
+        return res;
     }
 }

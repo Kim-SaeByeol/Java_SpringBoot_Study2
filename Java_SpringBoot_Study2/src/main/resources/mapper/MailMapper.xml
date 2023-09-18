@@ -5,20 +5,24 @@
 <mapper namespace="kopo.poly.persistance.mapper.IMailMapper">
 
     <!-- 게시판 리스트 쿼리 -->
-    <select id="getMailList" resultType="MailDTO">
-        SELECT N.MAIL_SEQ, N.TITLE, N.TO_MAIL, N.CONTENTS, TO_CHAR(N.SEND_TIME, 'YYYY-MM-DD HH24:MI:SS')
-        FROM MAIL_INFO N
-        ORDER BY N.SEND_TIME DESC
+    <select id="getMailList" resultType="MailDTO" parameterType="MailDTO">
+        SELECT
+            MAIL_SEQ,
+            TO_MAIL,
+            TITLE,
+            CONTENTS,
+            TO_CHAR(SEND_TIME, 'YYYY.MM.DD HH24:MI:SS') AS SEND_TIME
+        FROM
+            MAIL_INFO
+        ORDER BY SEND_TIME
     </select>
 
+    <!-- 게시판 등록 쿼리 -->
     <insert id="insertMailInfo" parameterType="MailDTO">
-        INSERT INTO MAIL_INFO
-            (
-            MAIL_SEQ, TITLE, TO_MAIL, CONTENTS, SEND_TIME
-            )
-            VALUES(
-                      (SELECT NVL(MAX(A.MAIL_SEQ),0)+1 FROM MAIL_INFO A),
-                      #{title}, #{toMail}, #{contents}, SYSDATE
+        INSERT INTO MAIL_INFO (MAIL_SEQ, TO_MAIL, TITLE, CONTENTS, SEND_TIME)
+        VALUES(
+                      (SELECT NVL(MAX(MAIL_SEQ),0)+1 FROM MAIL_INFO),
+                      #{toMail}, #{title}, #{contents}, SYSDATE
               )
     </insert>
 </mapper>

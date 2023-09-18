@@ -25,6 +25,8 @@
             <version>19.3.0.0</version>
         </dependency>
 
+
+
         <!-- 메일발송 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -87,5 +89,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

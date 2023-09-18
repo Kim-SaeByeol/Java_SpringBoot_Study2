@@ -45,4 +45,3 @@ public interface INoticeService {
     void deleteNoticeInfo(NoticeDTO pDTO) throws Exception;
 
 }
-

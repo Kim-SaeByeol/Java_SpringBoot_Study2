@@ -4,29 +4,67 @@
 <!-- JAVA와 연결할 Mapper 파일 설정 -->
 <mapper namespace="kopo.poly.persistance.mapper.IUserInfoMapper">
 
-<!--회원 가입하기(회원 정보 등록하기)-->
+    <select id="getUserIdExists" parameterType="UserInfoDTO" resultType="UserInfoDTO" >
+        SELECT DECODE(COUNT(1), 0, 'N', 'Y') AS EXISTS_YN
+        FROM USER_INFO
+        WHERE USER_ID = #{userId}
+    </select>
+
+    <select id="getEmailExists" parameterType="UserInfoDTO" resultType="UserInfoDTO">
+        SELECT DECODE(COUNT(1), 0, 'N', 'Y') AS EXISTS_YN
+        FROM USER_INFO
+        WHERE EMAIL = #{email}
+    </select>
+
     <insert id="insertUserInfo" parameterType="UserInfoDTO">
-        INSERT INTO USER_INFO (
-            USER_ID, USER_NAME, PASSWORD, EMAIL, ADDR1, ADDR2, REG_ID, REG_DT, CHG_ID, CHG_DT
-        )
-        VALUES (
-                #{userId}, #{userName}, #{password}, #{email}, #{addr1}, #{addr2}, #{userId}, SYSDATE, #{userId}, SYSDATE
-               )
+        INSERT INTO USER_INFO
+        (USER_ID,
+         USER_SEQ,
+         USER_NAME,
+         PASSWORD,
+         EMAIL,
+         ADDR1,
+         ADDR2,
+         REG_ID,
+         REG_DT,
+         CHG_ID,
+         CHG_DT)
+        VALUES (#{userId},
+                (SELECT NVL(MAX(USER_SEQ),0)+1 FROM USER_INFO),
+                #{userName},
+                #{password},
+                #{email},
+                #{addr1},
+                #{addr2},
+                #{userId},
+                SYSDATE,
+                #{userId},
+                SYSDATE)
     </insert>
 
-
-<!--회원 가입 전 아이디 중복체크-->
-    <select id="getUserIdExists" parameterType="UserInfoDTO" resultType="UserInfoDTO">
-        SELECT DECODE(COUNT(1), o, 'N', 'Y') AS EXISTS_YN
-        FROM USER_INFO
-        WHERE USER_ID = #{userID}
+    <select id="getUserList" resultType="UserInfoDTO" parameterType="UserInfoDTO">
+        SELECT
+            USER_SEQ,
+            USER_ID,
+            USER_NAME,
+            EMAIL,
+            ADDR1
+        FROM
+            USER_INFO
+        ORDER BY REG_DT
     </select>
 
-<!--회원 가입 전 이메일 중복체크-->
-    <select id="getEmailExists" parameterType="UserInfoDTO" resultType="UserInfoDTO">
-        SELECT DECODE(COUNT(1), o, 'N', 'Y') AS EXISTS_YN
-        FROM USER_INFO
-        WHERE USER_ID = #{email}
+    <select id="getUserInfo" resultType="UserInfoDTO">
+        SELECT
+            USER_SEQ,
+            USER_ID,
+            USER_NAME,
+            EMAIL,
+            ADDR1
+        FROM
+            USER_INFO
+        WHERE USER_ID = #{userId}
     </select>
+
 
 </mapper>

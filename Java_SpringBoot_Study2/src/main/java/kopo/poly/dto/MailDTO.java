@@ -15,6 +15,4 @@ public class MailDTO {
 
      String sendTime;    //보낸 날짜
 
-     String test;
-
 }

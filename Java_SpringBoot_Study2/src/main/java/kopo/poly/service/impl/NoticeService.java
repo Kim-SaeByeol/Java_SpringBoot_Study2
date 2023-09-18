@@ -25,6 +25,15 @@ public class NoticeService implements INoticeService {
 
         log.info(this.getClass().getName() + ".getNoticeList start!");
 
+        List<NoticeDTO> resultList = noticeMapper.getNoticeList();
+        if (resultList == null) {
+            log.info("resultList is null!");
+        } else if (resultList.isEmpty()) {
+            log.info("resultList is empty!");
+        } else {
+            log.info("resultList size: " + resultList.size());
+        }
+
         return noticeMapper.getNoticeList();
 
     }

@@ -9,5 +9,4 @@ class SpringBootOracleApplicationTests {
     @Test
     void contextLoads() {
     }
-
 }
