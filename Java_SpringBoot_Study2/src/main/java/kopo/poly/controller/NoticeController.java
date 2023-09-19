@@ -47,7 +47,7 @@ public class NoticeController {
         model.addAttribute("rList", rList);
 
         log.info(this.getClass().getName() + ".noticeList End!");
-        return "notice/noticeList";
+        return "/notice/noticeList";
     }
 
     @GetMapping(value = "noticeReg")

@@ -44,17 +44,17 @@ public class MailController {
      */
     @ResponseBody
     @PostMapping(value = "sendMail")
-    public MsgDTO sendMAil(HttpServletRequest request, ModelMap model) throws Exception {
+    public MsgDTO sendMail(HttpServletRequest request, ModelMap model) throws Exception {
         log.info(this.getClass().getName() + ".sendMail Start!");
 
         String msg = ""; // 발송 결과 메시지
 
         // 웹 URL로부터 전달받는 값들
-        String to_mail = CmmUtil.nvl(request.getParameter("to_mail"));
+        String toMail = CmmUtil.nvl(request.getParameter("toMail"));
         String title = CmmUtil.nvl(request.getParameter("title"));
         String contents = CmmUtil.nvl(request.getParameter("contents"));
 
-        log.info("to_mail : " + to_mail);
+        log.info("컨트롤러 toMail : " + toMail);
         log.info("title : " + title);
         log.info("contents : " + contents);
 
@@ -62,7 +62,7 @@ public class MailController {
         MailDTO pDTO = new MailDTO();
 
         // 웹에서 받은 값을 DTO에 넣기
-        pDTO.setToMail(to_mail); // 받는 사람을 DTO 저장
+        pDTO.setToMail(toMail); // 받는 사람을 DTO 저장
         pDTO.setTitle(title); // 제목을 DTO 저장
         pDTO.setContents(contents); // 내용을 DTO 저장
 
@@ -115,7 +115,7 @@ public class MailController {
             // 로그인된 사용자 아이디를 가져오기
             // 로그인을 아직 구현하지 않았기에 공지사항 리스트에서 로그인 한 것처럼 Session 값을 저장함
             String mail_seq = CmmUtil.nvl(request.getParameter("mail_seq")); // 제목
-            String to_mail = CmmUtil.nvl(request.getParameter("to_mail")); // 제목
+            String toMail = CmmUtil.nvl(request.getParameter("toMail")); // 제목
             String title = CmmUtil.nvl(request.getParameter("title")); // 공지글 여부
             String contents = CmmUtil.nvl(request.getParameter("contents")); // 내용
             String send_time = CmmUtil.nvl(request.getParameter("send_time")); // 내용
@@ -126,7 +126,7 @@ public class MailController {
              * ####################################################################################
              */
             log.info("mail_seq: " + mail_seq);
-            log.info("to_mail : " + to_mail);
+            log.info("toMail : " + toMail);
             log.info("title : " + title);
             log.info("contents : " + contents);
             log.info("send_time : " + send_time);
@@ -134,7 +134,7 @@ public class MailController {
             // 데이터 저장하기 위해 DTO에 저장하기
             MailDTO pDTO = new MailDTO();
             pDTO.setMailSeq(mail_seq);
-            pDTO.setToMail(to_mail);
+            pDTO.setToMail(toMail);
             pDTO.setTitle(title);
             pDTO.setContents(contents);
             pDTO.setSendTime(send_time);
