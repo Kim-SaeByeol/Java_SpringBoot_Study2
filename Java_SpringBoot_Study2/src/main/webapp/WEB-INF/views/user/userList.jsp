@@ -4,7 +4,6 @@
 <%@ page import="kopo.poly.util.CmmUtil" %>
 <%@ page import="kopo.poly.dto.UserInfoDTO" %>
 <%@ page import="kopo.poly.util.EncryptUtil" %>
-
 <%
     List<UserInfoDTO> rList = (List<UserInfoDTO>) request.getAttribute("rList");
 %>

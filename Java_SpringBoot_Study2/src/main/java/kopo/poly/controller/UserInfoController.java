@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -143,7 +144,8 @@ public class UserInfoController {
         return dto;
     }
 
-    @GetMapping(value = "userList")
+
+    @GetMapping (value = "userList")
     public String userList(ModelMap model) throws Exception {
         log.info(this.getClass().getName() + ".userList 시작!");
 
@@ -169,5 +171,60 @@ public class UserInfoController {
         model.addAttribute("rDTO", rDTO);
         log.info(this.getClass().getName() + ".userInfo End!");
         return "/user/userInfo";
+    }
+
+    /*
+    * 로그인을 위한 입력 화면으로 이동
+     */
+    @GetMapping(value = "login")
+    public String login() {
+        log.info(this.getClass().getName() + ".user/login Start");
+        log.info(this.getClass().getName() + ".user/login End");
+
+        return "user/login";
+    }
+
+    /*
+    * 로그인 처리 및 결과 알려주는 화면으로 이동
+     */
+    @ResponseBody
+    @PostMapping(value = "loginProc")
+    public MsgDTO loginProc(HttpServletRequest request, HttpSession session){
+        log.info(this.getClass().getName() + "loginProc Start");
+
+        int res = 0;
+        String msg = "";
+        MsgDTO dto = null;
+
+        //웹(loginProc)에서 받는 정보를 저장할 변수
+        UserInfoDTO pDTO = null;
+
+        try {
+            String userId = CmmUtil.nvl(request.getParameter("userId"));
+            String password = CmmUtil.nvl(request.getParameter("password"));
+
+            log.info("userId : " + userId);
+            log.info("password : " + password);
+
+            //웹(loginProc)에서 받는 정보를 저장할 변수를 메모리에 올리기
+            pDTO = new UserInfoDTO();
+
+            pDTO.setUserId(userId);
+
+            //비밀번호는 절대로 복호화 되지 않도록 해서 알고리즘으로 암호화 함
+            pDTO.setPassword(EncryptUtil.encHashSHA256(password));
+
+            //로그인을 위해 아이디와 비밀번호가 일치하는지 확인하기 위한 userInfoService 호출하기
+            UserInfoDTO rDTO = userInfoService.getLogin(pDTO);
+
+            /**
+             * 로그인을 성공했다면, 회원아이디 정보를 session에 저장함.
+             *
+             */
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        log.info(this.getClass().getName() + "loginProc End");
     }
 }

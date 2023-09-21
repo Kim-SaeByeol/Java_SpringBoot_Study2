@@ -17,4 +17,6 @@ public interface IUserInfoMapper {
 
     List<UserInfoDTO> getUserList() throws Exception;
     UserInfoDTO getUserInfo(UserInfoDTO pDTO) throws Exception;
+
+    UserInfoDTO getLogin(UserInfoDTO pDTO) throws Exception;
 }

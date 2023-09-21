@@ -66,5 +66,12 @@
         WHERE USER_ID = #{userId}
     </select>
 
+    <select id="getLogin" parameterType="userInfoDTO" resultType="UserInfoDTO">
+        SELECT USER_ID, USER_NAME, EMAIL
+        FROM USER_INFO
+        WHERE USER_ID = #{userId}
+            AND PASSWORD = #{password}
+    </select>
+
 
 </mapper>
