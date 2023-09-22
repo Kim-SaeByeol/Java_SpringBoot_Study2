@@ -189,14 +189,13 @@ public class UserInfoController {
      */
     @ResponseBody
     @PostMapping(value = "loginProc")
-    public MsgDTO loginProc(HttpServletRequest request, HttpSession session){
-        log.info(this.getClass().getName() + "loginProc Start");
+    public MsgDTO loginProc(HttpServletRequest request, HttpSession session) {
+        log.info(this.getClass().getName() + ".loginProc Start!");
 
         int res = 0;
         String msg = "";
         MsgDTO dto = null;
 
-        //웹(loginProc)에서 받는 정보를 저장할 변수
         UserInfoDTO pDTO = null;
 
         try {
@@ -206,25 +205,38 @@ public class UserInfoController {
             log.info("userId : " + userId);
             log.info("password : " + password);
 
-            //웹(loginProc)에서 받는 정보를 저장할 변수를 메모리에 올리기
             pDTO = new UserInfoDTO();
 
             pDTO.setUserId(userId);
 
-            //비밀번호는 절대로 복호화 되지 않도록 해서 알고리즘으로 암호화 함
             pDTO.setPassword(EncryptUtil.encHashSHA256(password));
 
-            //로그인을 위해 아이디와 비밀번호가 일치하는지 확인하기 위한 userInfoService 호출하기
             UserInfoDTO rDTO = userInfoService.getLogin(pDTO);
 
-            /**
-             * 로그인을 성공했다면, 회원아이디 정보를 session에 저장함.
-             *
-             */
+            if (CmmUtil.nvl(rDTO.getUserId()).length() > 0) {
+
+                res = 1;
+
+                msg = "로그인이 성공했습니다.";
+
+                session.setAttribute("SS_USER_ID", userId);
+                session.setAttribute("SS_USER_NAME", CmmUtil.nvl(rDTO.getUserName()));
+            } else {
+                msg = "아이디와 비밀번호가 올바르지 않습니다.";
+            }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            msg = "시스템 문제로 로그인이 실패했습니다.";
+            res = 2;
+            log.info(e.toString());
+            e.printStackTrace();
+        } finally {
+            dto = new MsgDTO();
+            dto.setResult(res);
+            dto.setMsg(msg);
+
+            log.info(this.getClass().getName() + ".loginProc End!");
         }
 
-        log.info(this.getClass().getName() + "loginProc End");
+        return dto;
     }
 }
