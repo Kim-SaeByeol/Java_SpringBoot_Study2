@@ -193,4 +193,16 @@ public class UserInfoService implements IUserInfoService {
 
         return rDTO;
     }
+
+    @Override
+    public UserInfoDTO searchUserIdOrPasswordProc(UserInfoDTO pDTO) throws Exception{
+
+        log.info(this.getClass().getName() + ".searchUserIdOrPasswordProc Start !");
+
+        UserInfoDTO rDTO = userInfoMapper.getUserId(pDTO);
+
+        log.info(this.getClass().getName() + ".searchUserIdOrPasswordProc End!");
+
+        return rDTO;
+    }
 }
