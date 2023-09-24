@@ -239,4 +239,16 @@ public class UserInfoController {
 
         return dto;
     }
+
+    /**
+     * 아이디 찾기 화면
+     */
+
+    @GetMapping(value = "searchUserId")
+    public String searchUserId() {
+        log.info(this.getClass().getName() + ".user/searchUserId Start !");
+        log.info(this.getClass().getName() + ".user/searchUserId End !");
+        return "user/searchUserId";
+    }
+
 }
