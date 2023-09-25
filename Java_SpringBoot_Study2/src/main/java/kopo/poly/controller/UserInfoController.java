@@ -247,7 +247,7 @@ public class UserInfoController {
     @GetMapping(value = "searchUserId")
     public String searchUserId() {
         log.info(this.getClass().getName() + ".user/searchUserId Start !");
-        log.info(this.getClass().getName() + ".user/searchUserId End !");
+        log.info(this.getClass().getName() + ".user/searchUserId End ! test");
         return "user/searchUserId";
     }
 
