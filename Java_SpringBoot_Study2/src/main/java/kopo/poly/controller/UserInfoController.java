@@ -247,8 +247,52 @@ public class UserInfoController {
     @GetMapping(value = "searchUserId")
     public String searchUserId() {
         log.info(this.getClass().getName() + ".user/searchUserId Start !");
-        log.info(this.getClass().getName() + ".user/searchUserId End ! test");
+        log.info(this.getClass().getName() + ".user/searchUserId End !");
         return "user/searchUserId";
     }
+    /**
+     * 아이디 찾기 로직 수행
+     */
+    @PostMapping(value = "searchUserIdProc")
+    public String searchUserIdProc(HttpServletRequest request, ModelMap model) throws Exception{
+        log.info(this.getClass().getName() + ".user/searchUserIdProc Start!");
 
+        /**
+         * #################################################
+         *      웹(회원 정보 입력화면) 에서 받는 정보를 String 변수에 저장
+         *      무조건 웹으로 받는 정보는 DTO에 저장하기 위해 임시로 String 변수에 저장함
+         * #################################################
+         */
+
+
+        String userName = CmmUtil.nvl(request.getParameter("userName"));
+        String email = CmmUtil.nvl(request.getParameter("email"));
+
+        /**
+         * #################################################
+         *      반드시, 값을 받았으면 꼭 로그를 찍을 것.
+         * #################################################
+         */
+
+        log.info("userName" + userName);
+        log.info("email" + email);
+
+        /**
+         * #################################################
+         *      웹(회원정보 입력화면)에서 받는 정보를 DTO에 저장
+         *      무조건 웹으로 받는 정보는 DTO에 저장해야 한다고 이해하길 권함
+         * #################################################
+         */
+
+        UserInfoDTO pDTO = new UserInfoDTO();
+        pDTO.setUserName(userName);
+        pDTO.setEmail(EncryptUtil.encAES128CBC(email));
+        UserInfoDTO rDTO = Optional.ofNullable(userInfoService.searchUserIdOrPasswordProc(pDTO)).orElseGet(UserInfoDTO::new);
+
+        model.addAttribute("rDTO", rDTO);
+
+        log.info(this.getClass().getName() + ".user/searchUserIdProc End!");
+
+        return "user/searchUserIdResult";
+    }
 }
