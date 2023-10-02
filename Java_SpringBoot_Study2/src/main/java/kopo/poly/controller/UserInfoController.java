@@ -9,6 +9,7 @@ import kopo.poly.util.EncryptUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -181,7 +182,7 @@ public class UserInfoController {
         log.info(this.getClass().getName() + ".user/login Start");
         log.info(this.getClass().getName() + ".user/login End");
 
-        return "user/login";
+        return "/user/login";
     }
 
     /*
@@ -206,21 +207,21 @@ public class UserInfoController {
             log.info("password : " + password);
 
             pDTO = new UserInfoDTO();
-
             pDTO.setUserId(userId);
-
             pDTO.setPassword(EncryptUtil.encHashSHA256(password));
 
             UserInfoDTO rDTO = userInfoService.getLogin(pDTO);
 
             if (CmmUtil.nvl(rDTO.getUserId()).length() > 0) {
-
                 res = 1;
-
                 msg = "로그인이 성공했습니다.";
 
-                session.setAttribute("SS_USER_ID", userId);
-                session.setAttribute("SS_USER_NAME", CmmUtil.nvl(rDTO.getUserName()));
+                // 세션에 이미 사용자 정보가 있는지 확인
+                UserInfoDTO sessionUserInfo = (UserInfoDTO) session.getAttribute("SESSION_USER_INFO");
+                if (sessionUserInfo == null) {
+                    // 세션에 사용자 정보가 없다면 추가
+                    session.setAttribute("SESSION_USER_INFO", rDTO);
+                }
             } else {
                 msg = "아이디와 비밀번호가 올바르지 않습니다.";
             }
@@ -248,7 +249,7 @@ public class UserInfoController {
     public String searchUserId() {
         log.info(this.getClass().getName() + ".user/searchUserId Start !");
         log.info(this.getClass().getName() + ".user/searchUserId End !");
-        return "user/searchUserId";
+        return "/user/searchUserId";
     }
     /**
      * 아이디 찾기 로직 수행
@@ -293,6 +294,32 @@ public class UserInfoController {
 
         log.info(this.getClass().getName() + ".user/searchUserIdProc End!");
 
-        return "user/searchUserIdResult";
+        return "/user/searchUserIdResult";
     }
+
+    @GetMapping("/loginResult")
+    public String loginResult(ModelMap model, HttpSession session) {
+        log.info(this.getClass().getName() + ".loginResult Start!");
+
+        // 세션에 저장된 속성 이름 확인
+        String attributeName = "SESSION_USER_INFO";
+        UserInfoDTO userInfoDTO = (UserInfoDTO) session.getAttribute(attributeName);
+
+        if(userInfoDTO == null) {
+            log.info("세션에서 " + attributeName + " 속성을 가져오지 못했습니다.");
+            // 세션에 사용자 정보가 없으면 어떻게 처리할지 정해야 합니다.
+            // 여기에서는 예시로 로그인 페이지로 리다이렉트하도록 했습니다.
+            return "redirect:/user/login";
+        }
+
+        // 사용자 정보를 ModelMap에 전달
+        model.addAttribute("rDTO", userInfoDTO);
+
+        log.info(this.getClass().getName() + ".loginResult End!");
+
+        return "/user/loginResult";
+    }
+
+
+
 }
