@@ -24,7 +24,11 @@
 
            $("#btnSend2").on("click", function () {
                var userIdParam = "<%= rDTO.getUserId() %>"; // userIdParam 변수에 사용자 아이디 저장
-               location.href = "/user/userInfo?userId=" + userIdParam;
+               if(userIdParam !== '') {
+                   location.href = "/user/userInfo?userId=" + userIdParam;
+               } else {
+                   alert("로그인 해주시기 바랍니다.");
+               }
            })
         })
     </script>

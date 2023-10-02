@@ -305,10 +305,9 @@ public class UserInfoController {
         String attributeName = "SESSION_USER_INFO";
         UserInfoDTO userInfoDTO = (UserInfoDTO) session.getAttribute(attributeName);
 
+        //세션 못 받아오는 로그를 보기 위함
         if(userInfoDTO == null) {
             log.info("세션에서 " + attributeName + " 속성을 가져오지 못했습니다.");
-            // 세션에 사용자 정보가 없으면 어떻게 처리할지 정해야 합니다.
-            // 여기에서는 예시로 로그인 페이지로 리다이렉트하도록 했습니다.
             return "redirect:/user/login";
         }
 
