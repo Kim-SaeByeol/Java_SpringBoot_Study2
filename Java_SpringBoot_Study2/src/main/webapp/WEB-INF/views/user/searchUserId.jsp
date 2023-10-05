@@ -7,32 +7,31 @@
     <link rel="stylesheet" href="/css/table.css"/>
     <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
     <script type="text/javascript">
-
         //Html 로딩이 완료되고 실행됨
         $(document).ready(function (){
 
             //로그인 화면 이동
-            $("#btnLogin").on("click", function (){ // 버튼을 클락하면 발생되는 이벤트 생성.
+            $("#btnLogin").on("click", function () { // 버튼을 클락하면 발생되는 이벤트 생성.
                 location.href = "/user/login"
             })
 
             //아이디 찾기
-            $("#btnSearchUserId").on("click", function (){
+            $("#btnSearchUserId").on("click", function () {
                 let f = document.getElementById("f");   //form 태그
-
                 if(f.userName.value === ""){
                     alert("이름을 입력하세요.");
                     f.userName.focus();
                     return;
                 }
-                if(f.email.value() === "") {
+                if(f.email.value === "") {
                     alert("이메일을 입력하세요.");
-                    f.userName.focus();
+                    f.email.focus();
                     return;
                 }
 
+
                 f.method = "post"   //아이디 찾기 정보 전송방식
-                f.action = "/user/searchUserIdproc" //아이디 찾기 URL
+                f.action = "/user/searchUserIdProc" //아이디 찾기 URL
                 f.submit(); //아이디 찾기 정보 전송하기.
             })
         })
@@ -49,13 +48,13 @@
             <div class="divTableRow">
                 <div class="divTableCell">이름</div>
                 <div class="divTableCell">
-                    <input type="text" name="userName" id="userId" style="width:80%">
+                    <input type="text" name="userName" id="userName" style="width:80%">
                 </div>
             </div>
             <div class="divTableRow">
                 <div class="divTableCell">이메일</div>
                 <div class="divTableCell">
-                    <input type="text" name="email" id="userId" style="width:80%">
+                    <input type="text" name="email" id="email" style="width:80%">
                 </div>
             </div>
         </div>

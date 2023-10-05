@@ -11,6 +11,7 @@ import kopo.poly.util.EncryptUtil;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Indexed;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.unit.DataUnit;
@@ -204,4 +205,55 @@ public class UserInfoService implements IUserInfoService {
 
         return rDTO;
     }
+
+    @Override
+    public int newPasswordProc(UserInfoDTO pDTO) throws Exception {
+
+        log.info(this.getClass().getName() + ".newPasswordProc Start!");
+
+        // 비밀번호 재설정
+        int success = userInfoMapper.updatePassword(pDTO);
+
+        log.info(this.getClass().getName() + ".newPasswordProc End");
+
+        return success;
+    }
+
+    @Override
+    public UserInfoDTO getcheckAuthNumber(UserInfoDTO pDTO) throws Exception {
+
+        log.info(this.getClass().getName() + ".getcheckAuthNumber 시작!");
+
+        UserInfoDTO rDTO = userInfoMapper.getcheckAuthNumber(pDTO);
+
+        String existsYn = CmmUtil.nvl(rDTO.getExistsYn());
+
+        log.info("existsYn : " + existsYn);
+
+        if (existsYn.equals("Y")) {
+
+            // 6자리 랜덤 숫자 생성하기
+            int authNumber = ThreadLocalRandom.current().nextInt(100000, 1000000);
+
+            log.info("authNumber : " + authNumber);
+
+            // 인증번호 발송 로직
+            MailDTO dto = new MailDTO();
+
+            dto.setTitle("이메일 중복 확인 인증번호 발송 메일");
+            dto.setContents("인증번호는 " + authNumber + " 입니다.");
+            dto.setToMail(EncryptUtil.decAES128CBC(CmmUtil.nvl(pDTO.getEmail())));
+
+            mailService.doSendMail(dto); // 이메일 발송
+
+            dto = null;
+
+            rDTO.setAuthNumber(authNumber); // 인증번호를 결과값에 넣어주기
+        }
+
+        log.info(this.getClass().getName() + ".getcheckAuthNumber 끝!"); // 인증번호를 결과값에 넣어주기
+
+        return rDTO;
+    }
+
 }

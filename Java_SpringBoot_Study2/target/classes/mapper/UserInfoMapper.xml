@@ -75,17 +75,28 @@
 
     <select id="getUserId" parameterType="UserInfoDTO" resultType="UserInfoDTO">
         SELECT
-            USER_Id,
+            USER_ID,
             USER_NAME,
             EMAIL
             FROM USER_INFO
             WHERE 1=1
-        <if test="userId neq and userId neq '' ">
+        <if test="userId neq null and userId neq '' ">
                  AND USER_ID = #{userId}
          </if>
         AND USER_NAME = #{userName}
         AND EMAIL = #{email}
     </select>
 
+<!--비밀번호 재설정-->
+    <update id="updatePassword" parameterType="UserInfoDTO">
+        UPDATE USER_INFO
+        SET PASSWORD = #{password}
+        WHERE USER_ID = #{userId}
+    </update>
 
+    <select id="getcheckAuthNumber" parameterType="UserInfoDTO" resultType="UserInfoDTO">
+        SELECT DECODE(COUNT(1), 0, 'N', 'Y') AS EXISTS_YN
+        FROM USER_INFO
+        WHERE EMAIL = #{email}
+    </select>
 </mapper>
