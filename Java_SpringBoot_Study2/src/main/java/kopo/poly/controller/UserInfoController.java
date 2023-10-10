@@ -389,7 +389,7 @@ public class UserInfoController {
         return "/user/newPassword";
     }
 
-    @GetMapping(value = "newPasswordProc")
+    @PostMapping(value = "newPasswordProc")
     public String newPasswordProc(HttpServletRequest request, ModelMap model, HttpSession session) throws Exception {
         log.info(this.getClass().getName() + "./user/newPasswordProc Start!");
 
