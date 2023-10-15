@@ -15,4 +15,6 @@ public class WeatherDTO {
     String weather; //날씨
 
 
+
+
 }
