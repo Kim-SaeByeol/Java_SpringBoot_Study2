@@ -1,23 +1,26 @@
 package kopo.poly.controller;
 
-import kopo.poly.dto.GptTestDTO;
+import io.github.flashvayne.chatgpt.service.ChatgptService;
+import kopo.poly.service.impl.ChatService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/gpt-test")
+@Slf4j
+@RequestMapping("/api/v1/chat-gpt")
 public class GptTestController {
+    private final ChatService chatService;
+    private final ChatgptService chatgptService;
 
-    @PostMapping("/chat")
-    public GptTestDTO chat(@RequestBody GptTestDTO requestDTO) {
-        // 실제로는 여기에서 GPT와의 통신이 이루어져야 합니다.
-        // 현재는 간단한 예시로 사용자 입력을 그대로 응답으로 반환하는 것으로 대체합니다.
-
-        GptTestDTO responseDTO = new GptTestDTO();
-        responseDTO.setGptMessage("GPT 응답: " + requestDTO.getGptMessage());
-
-        return responseDTO;
+    //chat-gpt 와 간단한 채팅 서비스 소스
+    @PostMapping("")
+    public String test(@RequestBody String question) {
+        return chatService.getChatResponse(question);
+        //\n\nAs an AI language model, I don't have feelings, but I'm functioning well. Thank you for asking. How can I assist you today?
     }
 }
