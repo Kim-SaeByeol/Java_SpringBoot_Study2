@@ -1,7 +1,9 @@
 package kopo.poly.controller;
 
+import kopo.poly.dto.MailDTO;
 import kopo.poly.dto.OcrDTO;
 import kopo.poly.service.IOcrService;
+import kopo.poly.service.impl.OcrService;
 import kopo.poly.util.CmmUtil;
 import kopo.poly.util.DateUtil;
 import kopo.poly.util.FileUtil;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -31,7 +35,7 @@ public class OcrController {
     public String uploadImage() {
         log.info(this.getClass().getName() + ".uploadImage!");
 
-        return "ocr/uploadImage";
+        return "/ocr/uploadImage";
     }
     @PostMapping(value = "readImage")
     public String readImage(ModelMap model, @RequestParam(value = "fileUpload") MultipartFile mf)
@@ -65,14 +69,16 @@ public class OcrController {
 
             pDTO.setFileName(saveFileName);
             pDTO.setFilePath(saveFilePath);
-            pDTO.setExt(ext);
+
+            pDTO.setSaveFileName(saveFileName);
+            pDTO.setSaveFilePath(saveFilePath);
             pDTO.setOrgFileName(originalFileName);
-            pDTO.setRegId("admin");
+            pDTO.setExt(ext);
+            pDTO.setRegId("김새별");
 
             OcrDTO rDTO = Optional.ofNullable(ocrService.getReadforImageText(pDTO)).orElseGet(OcrDTO::new);
 
-            res = CmmUtil.nvl(rDTO.getTextFromImage());
-
+            res = CmmUtil.nvl(rDTO.getOcrText());
             rDTO = null;
             pDTO = null;
         } else {
@@ -81,8 +87,24 @@ public class OcrController {
         }
         model.addAttribute("res", res);
 
+
         log.info(this.getClass().getName() + ".readImage 끝!");
 
-        return "ocr/readImage";
+        return "/ocr/readImage";
     }
+
+    @GetMapping(value = "OcrList")
+    public String OcrList(ModelMap model) throws Exception {
+        log.info(this.getClass().getName() + ".OcrList 시작!");
+
+        List<OcrDTO> rList = Optional.ofNullable(ocrService.getOcrList())
+                .orElseGet(ArrayList::new);
+
+        model.addAttribute("rList", rList);
+
+        log.info(this.getClass().getName() + ".OcrList End!");
+
+        return "/ocr/OcrList";
+    }
+
 }

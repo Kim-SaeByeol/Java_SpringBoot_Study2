@@ -22,7 +22,6 @@ import java.util.concurrent.ThreadLocalRandom;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-
 public class UserInfoService implements IUserInfoService {
 
     private final IUserInfoMapper userInfoMapper; // Mapper 가져오기

@@ -14,9 +14,13 @@
     <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
     <script>
         const myOcrText = "<%=res%>";
+
         $(document).ready(function () {
             $("#btnTextRead").on("click", function () {
                 speak(myOcrText);
+            })
+            $("#btngetList").on("click", function () {
+                location.href = "/ocr/OcrList"; // 공지사항 리스트 이동
             })
         })
         function speak(text) {
@@ -54,6 +58,7 @@
 </div>
 <div>
     <button id="btnTextRead" type="button">문자열 읽기</button>
+    <button id="btngetList" type="button">목록 보기</button>
 </div>
 </body>
 </html>
