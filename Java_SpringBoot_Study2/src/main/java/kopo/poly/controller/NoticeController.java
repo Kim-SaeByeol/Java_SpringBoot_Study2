@@ -54,7 +54,7 @@ public class NoticeController {
     public String NoticeReg() {
         log.info(this.getClass().getName() + ".noticeReg Start!");
         log.info(this.getClass().getName() + ".noticeReg End!");
-        return "notice/noticeReg";
+        return "/notice/noticeReg";
     }
 
     @ResponseBody
@@ -102,7 +102,7 @@ public class NoticeController {
                 .orElseGet(NoticeDTO::new);
         model.addAttribute("rDTO", rDTO);
         log.info(this.getClass().getName() + ".noticeInfo End!");
-        return "notice/noticeInfo";
+        return "/notice/noticeInfo";
     }
 
     @GetMapping(value = "noticeEditInfo")
@@ -116,7 +116,7 @@ public class NoticeController {
                 .orElseGet(NoticeDTO::new);
         model.addAttribute("rDTO", rDTO);
         log.info(this.getClass().getName() + ".noticeEditInfo End!");
-        return "notice/noticeEditInfo";
+        return "/notice/noticeEditInfo";
     }
 
     @ResponseBody
