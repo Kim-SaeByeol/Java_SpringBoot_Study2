@@ -20,7 +20,7 @@
 --             TO_CHAR(REG_DT, 'YYYY.MM.DD HH24:MI:SS') AS REG_DT
         FROM
             OCR_INFO
-        ORDER BY REG_DT
+        ORDER BY SEQ
     </select>
 
 

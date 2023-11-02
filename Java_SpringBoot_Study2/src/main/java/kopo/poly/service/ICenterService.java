@@ -1,6 +1,6 @@
 package kopo.poly.service;
 
-import kopo.poly.dto.NoticeDTO;
+import kopo.poly.dto.CenterDTO;
 
 import java.util.List;
 
@@ -8,16 +8,16 @@ public interface ICenterService {
 
 
     // 조회
-    List<NoticeDTO> getCenterList() throws Exception;
+    List<CenterDTO> getCenterList() throws Exception;
 
     // 등록
-    void insertCenterInfo(NoticeDTO pDTO) throws Exception;
+    void insertCenterInfo(CenterDTO pDTO) throws Exception;
 
     // 수정
-    void updateCenterInfo(NoticeDTO pDTO) throws Exception;
+    void updateCenterInfo(CenterDTO pDTO) throws Exception;
 
     // 삭제
-    void deleteCenterInfo(NoticeDTO pDTO) throws Exception;
+    void deleteCenterInfo(CenterDTO pDTO) throws Exception;
 
 
 }

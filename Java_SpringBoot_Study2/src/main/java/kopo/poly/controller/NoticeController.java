@@ -36,6 +36,8 @@ public class NoticeController {
 
     private final INoticeService noticeService;
 
+
+
     @GetMapping(value = "noticeList")
     public String noticeList(HttpSession session, ModelMap model) throws Exception {
         log.info(this.getClass().getName() + ".noticeList Start!");
@@ -50,12 +52,14 @@ public class NoticeController {
         return "/notice/noticeList";
     }
 
+
     @GetMapping(value = "noticeReg")
     public String NoticeReg() {
         log.info(this.getClass().getName() + ".noticeReg Start!");
         log.info(this.getClass().getName() + ".noticeReg End!");
         return "/notice/noticeReg";
     }
+
 
     @ResponseBody
     @PostMapping(value = "noticeInsert")
@@ -90,6 +94,8 @@ public class NoticeController {
         }
         return dto;
     }
+
+
 
     @GetMapping(value = "noticeInfo")
     public String noticeInfo(HttpServletRequest request, ModelMap model) throws Exception {

@@ -9,6 +9,10 @@ import kopo.poly.util.DateUtil;
 import kopo.poly.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +21,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +42,8 @@ public class OcrController {
     private final IOcrService ocrService;
 
     final private String FILE_UPLOAD_SAVE_PATH = "C:/upload";
+
+    private String fullFileInfo = "";
 
     @GetMapping(value = "uploadImage")
     public String uploadImage() {
@@ -56,7 +70,7 @@ public class OcrController {
 
             String saveFilePath = FileUtil.mkdirForDate(FILE_UPLOAD_SAVE_PATH);
 
-            String fullFileInfo = saveFilePath + "/" + saveFileName;
+            String fullFileInfo = saveFilePath + saveFileName;
 
             log.info("ext : " + ext);
             log.info("saveFileName : " + saveFileName);
@@ -106,5 +120,36 @@ public class OcrController {
 
         return "/ocr/OcrList";
     }
+
+    @GetMapping("/download")
+    public void download(@RequestParam("filePath") String filePath, HttpServletResponse response) {
+        log.info(this.getClass().getName() + ".다운로드 컨트롤 시작~");
+        try {
+            String decodedFilePath = URLDecoder.decode(filePath, String.valueOf(StandardCharsets.UTF_8));
+            Path file = Paths.get(decodedFilePath.replace("\\", "/"));
+            log.info("다운로드 받을 파일 경로 : " + file);
+
+            if (Files.exists(file) && Files.isRegularFile(file)) {
+                log.info("파일이 존재합니다~");
+                response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+                response.setHeader("Content-Disposition", "attachment; filename=" + file.getFileName());
+
+                try (InputStream inputStream = Files.newInputStream(file)) {
+                    IOUtils.copy(inputStream, response.getOutputStream());
+                    log.info("파일 다운로드 하라고 서버에 전달 했어요");
+                    response.flushBuffer();
+                }
+            } else {
+                log.error("해당 경로에 같은 파일이 없음! : " + decodedFilePath);
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            }
+        } catch (Exception e) {
+            log.error(this.getClass().getName() + ".다운로드 컨트롤 에러~", e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        } finally {
+            log.info(this.getClass().getName() + ".다운로드 컨트롤 끝~");
+        }
+    }
+
 
 }
