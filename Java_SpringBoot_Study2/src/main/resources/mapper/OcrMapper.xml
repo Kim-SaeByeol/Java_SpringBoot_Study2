@@ -52,4 +52,10 @@
                )
     </insert>
 
+    <select id="selectOcrInfo" resultType="OcrDTO" parameterType="OcrDTO">
+        SELECT ORG_FILE_NAME
+        FROM OCR_INFO
+        WHERE SEQ = #{seq}
+    </select>
+
 </mapper>

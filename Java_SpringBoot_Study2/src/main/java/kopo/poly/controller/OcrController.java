@@ -124,6 +124,10 @@ public class OcrController {
     @GetMapping("/download")
     public void download(@RequestParam("filePath") String filePath, HttpServletResponse response) {
         log.info(this.getClass().getName() + ".다운로드 컨트롤 시작~");
+        OcrDTO pDTO = new OcrDTO();
+
+        log.info("원래 파일 이름 : " + pDTO.getSaveFileName());
+        log.info("저장할 파임 이름 : " + pDTO.getOrgFileName());
         try {
             String decodedFilePath = URLDecoder.decode(filePath, String.valueOf(StandardCharsets.UTF_8));
             Path file = Paths.get(decodedFilePath.replace("\\", "/"));
@@ -132,7 +136,7 @@ public class OcrController {
             if (Files.exists(file) && Files.isRegularFile(file)) {
                 log.info("파일이 존재합니다~");
                 response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
-                response.setHeader("Content-Disposition", "attachment; filename=" + file.getFileName());
+                response.setHeader("Content-Disposition", "attachment; filename=" + pDTO.getOrgFileName());
 
                 try (InputStream inputStream = Files.newInputStream(file)) {
                     IOUtils.copy(inputStream, response.getOutputStream());

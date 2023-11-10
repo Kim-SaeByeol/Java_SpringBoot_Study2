@@ -1,7 +1,20 @@
 package kopo.poly.util;
 
+import org.springframework.lang.Nullable;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Map;
 
 public class DateUtil {
     /**
@@ -10,12 +23,9 @@ public class DateUtil {
      * @return date
      */
     public static String getDateTime(String fm) {
-
         Date today = new Date();
         System.out.println(today);
-
         SimpleDateFormat date = new SimpleDateFormat(fm);
-
         return date.format(today);
     }
 
@@ -25,6 +35,37 @@ public class DateUtil {
      */
     public static String getDateTime() {
         return getDateTime("yyyy.MM.dd");
+    }
+
+    /**
+     * unix UTC 타입의 날짜, 시간 출력하기
+     * @param time 시간
+     * @return date
+     */
+    public static String getLongDateTime(Object time){
+        return getLongDateTime(time, "yyyy-MM-dd HH:mm:ss");
+    }
+
+    /**
+     * unix UTC 타입의 날짜, 시간 출력하기
+     * @param time
+     * @return
+     */
+    public static String getLongDateTime(Integer time){
+        return getLongDateTime(time, "yyyy-MM-dd HH:mm:ss");
 
     }
+
+    /**     ..*/
+    public static String getLongDateTime(Object time, String fm){
+        return getLongDateTime((Integer) time, fm);
+    }
+
+    public static String getLongDateTime(Integer time, String fm){
+        Instant instant = Instant.ofEpochSecond(time);
+        return DateTimeFormatter.ofPattern(fm)
+                .withZone(ZoneId.systemDefault())
+                .format(instant);
+    }
+
 }

@@ -1,8 +1,6 @@
 package kopo.poly.service.impl;
 
-import kopo.poly.dto.MailDTO;
 import kopo.poly.dto.OcrDTO;
-import kopo.poly.persistance.mapper.IMailMapper;
 import kopo.poly.persistance.mapper.IOcrMapper;
 import kopo.poly.service.IOcrService;
 import kopo.poly.util.CmmUtil;
@@ -105,5 +103,10 @@ public class OcrService implements IOcrService {
         return OcrMapper.getOcrList();
     }
 
+    @Override
+    public void selectOcrInfo(OcrDTO pDTO) throws Exception{
+        log.info(this.getClass().getName() + ".selectOcrInfo 실행");
+        OcrMapper.selectOcrInfo(pDTO);
+    }
 
 }

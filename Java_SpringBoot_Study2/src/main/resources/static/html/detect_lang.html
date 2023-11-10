@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>네이버 파파고를 이용한 언어 종류 찾기</title>
+    <link rel="stylesheet" href="/css/table.css">
+    <script src="/js/jquery-3.6.0.min.js"></script>
+    <script>
+        // HTML 로딩이 완료되고 실행
+        $(document).ready(function () {
+            // 버튼 클릭시 이벤트
+            $("#btnTextRead").on("click", function () {
+                detectLangs();    // 언어 감지 실행
+            });
+        });
+
+        function detectLangs() {
+            $.ajax({
+                url: "/papago/detectLangs",
+                type: "post",
+                dataType: "JSON",
+                data: $("#f").serialize(),
+                success: function (json) {
+                    let text = json.text;   // 원문
+                    console.log(text);
+                    let langCode = json.langCode; // 원문의 언어 종류
+                    console.log(langCode);
+                    let lang = "";
+
+                    if (langCode === "ko") {
+                        lang = "한국어";
+                    } else if (langCode === "en") {
+                        lang = "영어";
+                    } else if (langCode === "zh-CN") {
+                        lang = "중국어 간체";
+                    } else if (langCode === "zh-TW") {
+                        lang = "중국어 번체";
+                    } else {
+                        lang = "알수 없음";
+                    }
+                    console.log(lang);
+
+                    $("#contens").append("<div class=\"divTableRow\">");
+                    $("#contens").append("<div class=\"divTableCell\">" + text + "</div>");
+                    $("#contens").append("<div class=\"divTableCell\">" + lang + "</div>");
+                    $("#contens").append("</div>");
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<h2>이미지 파일로부터 인식된 문자열 읽어주기</h2>
+<hr/>
+<br/>
+<form name="f" id="f">
+    <div class="divTable minimalistBlack">
+        <div class="divTableBody">
+            <div class="divTableRow">
+                <div class="divTableCell" style="width: 30%"> 문장 입력</div>
+                <div class="divTableCell" style="width: 70%">
+                    <input type="text" name="text">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <button id="btnTextRead" type="button">언어 감지하기</button>
+    </div>
+</form>
+<br/>
+<br/>
+<h2>언어 감지 결과</h2>
+<hr/>
+<br/>
+<div class="divTable minimalistBlack">
+    <div class="divTableHeading">
+        <div class="divTableRow">
+            <div class="divTableHead" style="width: 70%">원문</div>
+            <div class="divTableHead" style="width: 30%">언어종류</div>
+        </div>
+    </div>
+    <div class="divTableBody" id="contens"></div>
+</div>
+</body>
+</html>

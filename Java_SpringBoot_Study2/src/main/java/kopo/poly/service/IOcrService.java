@@ -13,4 +13,6 @@ public interface IOcrService {
 
     //게시판 글 등록
     void insertOcrInfo(OcrDTO pDTO) throws Exception;
+
+    void selectOcrInfo(OcrDTO pDTO) throws Exception;
 }
